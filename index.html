@@ -18,10 +18,10 @@
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            -webkit-user-select: none; /* Disable text selection for Safari */
+            -moz-user-select: none;    /* Disable text selection for Firefox */
+            -ms-user-select: none;     /* Disable text selection for IE/Edge */
+            user-select: none;         /* Standard syntax to disable text selection */
         }
 
         @keyframes gradientBG {
@@ -59,14 +59,11 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
+            font-size: 280px;
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: bold;
-        }
-
-        #areaText {
-            white-space: nowrap; /* Prevents text wrapping */
         }
     </style>
 </head>
@@ -75,7 +72,7 @@
         <h2>Enter Last 3 Digits of Postal Code</h2>
         <input type="text" id="myInput" oninput="handleInput()" placeholder="Type last 3 digits" autofocus>
     </div>
-    <div id="fullscreen" onclick="toggleFullscreen()"><span id="areaText"></span></div>
+    <div id="fullscreen" onclick="toggleFullscreen()"></div>
     <script src="areas.js"></script>
     <script src="main.js"></script>
 </body>
