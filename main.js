@@ -72,3 +72,11 @@ document.addEventListener("blur", function(event) {
         setTimeout(() => event.target.focus(), 10);
     }
 }, true);
+
+// Enhancement: Adjust text size on window resize
+window.addEventListener('resize', function() {
+    const fullscreen = document.getElementById('fullscreen');
+    if (fullscreen.style.display === 'flex') {
+        fitText();
+    }
+});
