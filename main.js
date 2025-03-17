@@ -80,3 +80,21 @@ window.addEventListener('resize', function() {
         fitText();
     }
 });
+
+// Security enhancements
+// Disable right-click context menu completely
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// Prevent copying of any text
+document.addEventListener('copy', function(e) {
+    e.preventDefault();
+});
+
+// Prevent CTRL-A (select all) everywhere
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'a') {
+        e.preventDefault();
+    }
+});
