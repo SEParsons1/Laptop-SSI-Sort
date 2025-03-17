@@ -1,16 +1,22 @@
-let hideTimeout;
-
 function handleInput() {
     const input = document.getElementById('myInput');
-    let value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    value = value.slice(-3);
+    // Clean input: remove non-alphanumeric characters and convert to uppercase
+    let value = input.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+    
+    // If length exceeds 3, replace the entire input with the last character
+    if (value.length > 3) {
+        value = value.slice(-1);
+    }
+    
+    // Update the input field with the cleaned and processed value
     input.value = value;
+    
+    // Show overlay if exactly 3 characters; hide otherwise
+    const fullscreen = document.getElementById('fullscreen');
     if (value.length === 3) {
         displayArea(value);
     } else {
-        const fullscreen = document.getElementById('fullscreen');
         fullscreen.style.display = 'none';
-        clearTimeout(hideTimeout);
     }
 }
 
@@ -21,10 +27,6 @@ function displayArea(postalCode) {
     fitText();
     fullscreen.style.display = 'flex';
     speak(area);
-    clearTimeout(hideTimeout);
-    hideTimeout = setTimeout(() => {
-        fullscreen.style.display = 'none';
-    }, 3000);
 }
 
 function fitText() {
@@ -55,7 +57,6 @@ function speak(text) {
 function toggleFullscreen() {
     const fullscreen = document.getElementById('fullscreen');
     fullscreen.style.display = 'none';
-    clearTimeout(hideTimeout);
 }
 
 // Focus management for barcode scanner compatibility
