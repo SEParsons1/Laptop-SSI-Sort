@@ -1,88 +1,73 @@
-let inputTimer;
+let hideTimeout;
 
 function handleInput() {
-  clearTimeout(inputTimer);
-  const input = document.getElementById('myInput');
-  let cleanedInput = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (cleanedInput.length >= 3) {
-    const lastThree = cleanedInput.slice(-3);
-    inputTimer = setTimeout(() => {
-      displayArea(lastThree);
-    }, 100);
-  } else {
-    clearAreaDisplay();
-  }
-}
-
-function fitAreaDisplayText() {
-  const areaDisplay = document.getElementById('areaDisplay');
-  let fontSize = 200;
-  areaDisplay.style.fontSize = fontSize + 'px';
-  const bodyWidth = document.body.clientWidth;
-  while (areaDisplay.scrollWidth > bodyWidth && fontSize > 0) {
-    fontSize--;
-    areaDisplay.style.fontSize = fontSize + 'px';
-  }
-  if (fontSize > 0) {
-    fontSize -= 5;
-    areaDisplay.style.fontSize = fontSize + 'px';
-  }
+    const input = document.getElementById('myInput');
+    let value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    value = value.slice(-3);
+    input.value = value;
+    if (value.length === 3) {
+        displayArea(value);
+    } else {
+        const fullscreen = document.getElementById('fullscreen');
+        fullscreen.style.display = 'none';
+        clearTimeout(hideTimeout);
+    }
 }
 
 function displayArea(postalCode) {
-  const areaDisplay = document.getElementById('areaDisplay');
-  const area = areas[postalCode] || "INVALID";
-  areaDisplay.textContent = area;
-  fitAreaDisplayText();
-  document.getElementById('myInput').select();
+    const fullscreen = document.getElementById('fullscreen');
+    const area = areas[postalCode] || "NOT ON LIST!";
+    fullscreen.textContent = area;
+    fitText();
+    fullscreen.style.display = 'flex';
+    speak(area);
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+        fullscreen.style.display = 'none';
+    }, 3000);
 }
 
-function clearAreaDisplay() {
-  const areaDisplay = document.getElementById('areaDisplay');
-  areaDisplay.textContent = "";
-}
-
-function adjustViewport() {
-  const currentViewportHeight = window.visualViewport.height;
-  const body = document.body;
-  if (currentViewportHeight < window.innerHeight) {
-    const inputField = document.getElementById('myInput');
-    const offset = (currentViewportHeight - inputField.offsetHeight) / 2 - inputField.offsetHeight;
-    body.style.transform = 'translateY(' + offset + 'px)';
-  } else {
-    body.style.transform = 'none';
-  }
-}
-
-function refocusInputIfNeeded(e) {
-  const inputField = document.getElementById('myInput');
-  if (!inputField.contains(e.target)) {
-    e.preventDefault();
-    inputField.focus();
-  }
-}
-
-window.addEventListener('pageshow', function() {
-  document.body.style.transform = 'none';
-  setTimeout(() => {
-    adjustViewport();
-    fitAreaDisplayText();
-    const areaDisplay = document.getElementById('areaDisplay');
-    if (areaDisplay.textContent.trim().length > 0) {
-      setTimeout(() => {
-        adjustViewport();
-        fitAreaDisplayText();
-      }, 200);
+function fitText() {
+    const fullscreen = document.getElementById('fullscreen');
+    let fontSize = 280;
+    fullscreen.style.fontSize = fontSize + 'px';
+    const bodyWidth = document.body.clientWidth;
+    while (fullscreen.scrollWidth > bodyWidth && fontSize > 0) {
+        fontSize--;
+        fullscreen.style.fontSize = fontSize + 'px';
     }
-  }, 300);
+    if (fontSize > 0) {
+        fontSize -= 5;
+        fullscreen.style.fontSize = fontSize + 'px';
+    }
+}
+
+function speak(text) {
+    if (!window.speechSynthesis) {
+        console.log('Text-to-speech not supported.');
+        return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    speechSynthesis.speak(utterance);
+}
+
+function toggleFullscreen() {
+    const fullscreen = document.getElementById('fullscreen');
+    fullscreen.style.display = 'none';
+    clearTimeout(hideTimeout);
+}
+
+// Focus management for barcode scanner compatibility
+document.addEventListener("click", function(event) {
+    const input = document.getElementById("myInput");
+    if (event.target !== input) {
+        input.focus();
+    }
 });
 
-window.addEventListener('resize', adjustViewport);
-window.visualViewport.addEventListener('resize', adjustViewport);
-window.addEventListener('orientationchange', fitAreaDisplayText);
-window.addEventListener('resize', fitAreaDisplayText);
-document.addEventListener('touchmove', function(event) {
-  event.preventDefault();
-}, { passive: false });
-document.addEventListener('touchstart', refocusInputIfNeeded, { passive: false });
-document.addEventListener('mousedown', refocusInputIfNeeded);
+document.addEventListener("blur", function(event) {
+    if (event.target === document.getElementById("myInput")) {
+        setTimeout(() => event.target.focus(), 10);
+    }
+}, true);
