@@ -1,17 +1,10 @@
 function handleInput() {
     const input = document.getElementById('myInput');
-    // Clean input: remove non-alphanumeric characters and convert to uppercase
     let value = input.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-    
-    // If length exceeds 3, replace the entire input with the last character
     if (value.length > 3) {
         value = value.slice(-1);
     }
-    
-    // Update the input field with the cleaned and processed value
     input.value = value;
-    
-    // Show overlay if exactly 3 characters; hide otherwise
     const fullscreen = document.getElementById('fullscreen');
     if (value.length === 3) {
         displayArea(value);
@@ -59,21 +52,41 @@ function toggleFullscreen() {
     fullscreen.style.display = 'none';
 }
 
+// Prevent text selection in the input field
+const input = document.getElementById('myInput');
+
+// Block selection start
+input.addEventListener('selectstart', function(e) {
+    e.preventDefault();
+});
+
+// Clear any selection that occurs
+input.addEventListener('select', function() {
+    window.getSelection().removeAllRanges();
+});
+
+// Prevent dragging from starting a selection
+input.addEventListener('mousedown', function(e) {
+    if (e.button === 0) { // Left mouse button
+        e.preventDefault();
+        input.focus(); // Ensure the input remains focusable
+    }
+});
+
 // Focus management for barcode scanner compatibility
 document.addEventListener("click", function(event) {
-    const input = document.getElementById("myInput");
     if (event.target !== input) {
         input.focus();
     }
 });
 
 document.addEventListener("blur", function(event) {
-    if (event.target === document.getElementById("myInput")) {
+    if (event.target === input) {
         setTimeout(() => event.target.focus(), 10);
     }
 }, true);
 
-// Enhancement: Adjust text size on window resize
+// Adjust text size on window resize
 window.addEventListener('resize', function() {
     const fullscreen = document.getElementById('fullscreen');
     if (fullscreen.style.display === 'flex') {
@@ -82,17 +95,14 @@ window.addEventListener('resize', function() {
 });
 
 // Security enhancements
-// Disable right-click context menu completely
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
 });
 
-// Prevent copying of any text
 document.addEventListener('copy', function(e) {
     e.preventDefault();
 });
 
-// Prevent CTRL-A (select all) everywhere
 document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key === 'a') {
         e.preventDefault();
