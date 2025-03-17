@@ -19,9 +19,9 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             -webkit-user-select: none; /* Disable text selection for Safari */
-            -moz-user-select: none;    /* Disable text selection for Firefox */
-            -ms-user-select: none;     /* Disable text selection for IE/Edge */
-            user-select: none;         /* Standard syntax to disable text selection */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* IE/Edge */
+            user-select: none;         /* Standard */
         }
 
         @keyframes gradientBG {
@@ -48,10 +48,10 @@
             border: 1px solid #ddd;
             margin-bottom: 12px;
             box-sizing: border-box;
-            -webkit-user-select: none; /* Disable text selection for Safari */
-            -moz-user-select: none;    /* Disable text selection for Firefox */
-            -ms-user-select: none;     /* Disable text selection for IE/Edge */
-            user-select: none;         /* Standard syntax to disable text selection */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* IE/Edge */
+            user-select: none;         /* Standard */
         }
 
         #fullscreen {
@@ -74,7 +74,7 @@
 <body>
     <div class="container">
         <h2>Enter Last 3 Digits of Postal Code</h2>
-        <input type="text" id="myInput" oninput="handleInput()" onselectstart="return false;" placeholder="Type last 3 digits" autofocus>
+        <input type="text" id="myInput" oninput="handleInput()" placeholder="Type last 3 digits" autofocus>
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
     <script src="areas.js"></script>
