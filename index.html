@@ -48,6 +48,10 @@
             border: 1px solid #ddd;
             margin-bottom: 12px;
             box-sizing: border-box;
+            -webkit-user-select: none; /* Disable text selection for Safari */
+            -moz-user-select: none;    /* Disable text selection for Firefox */
+            -ms-user-select: none;     /* Disable text selection for IE/Edge */
+            user-select: none;         /* Standard syntax to disable text selection */
         }
 
         #fullscreen {
@@ -70,7 +74,7 @@
 <body>
     <div class="container">
         <h2>Enter Last 3 Digits of Postal Code</h2>
-        <input type="text" id="myInput" oninput="handleInput()" placeholder="Type last 3 digits" autofocus>
+        <input type="text" id="myInput" oninput="handleInput()" onselectstart="return false;" placeholder="Type last 3 digits" autofocus>
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
     <script src="areas.js"></script>
