@@ -3,112 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Postal Code CyberPulse (High Quality)</title>
+    <title>Postal Code Neon</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
-            height: 100vh;
+            font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #000;
+            height: 100vh;
             overflow: hidden;
             user-select: none;
-            position: relative;
         }
-
-        /* Fallback animations behind the Three.js canvas */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, #0ff 0%, transparent 70%),
-                        radial-gradient(circle, #f0f 0%, transparent 70%);
-            background-repeat: no-repeat;
-            background-position: 25% 25%, 75% 75%;
-            animation: fallbackPulse 6s linear infinite alternate;
-            opacity: 0.2;
-            z-index: -2;
-        }
-
-        @keyframes fallbackPulse {
-            0% {
-                transform: scale(1);
-            }
-            100% {
-                transform: scale(1.4);
-            }
-        }
-
         #three-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
             outline: none;
-            border: none;
+            z-index: -1;
         }
-
         .card {
-            position: relative;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(12px);
             border-radius: 20px;
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.7), inset 0 0 20px rgba(255,255,255,0.1);
-            padding: 50px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+            padding: 40px;
             text-align: center;
             max-width: 400px;
             width: 85%;
             color: #ffffff;
-            animation: electricPulse 1.5s infinite alternate;
-            border: 2px solid #0ff;
+            border: 2px solid rgba(255,255,255,0.4);
+            animation: glow 1.8s ease-in-out infinite alternate;
         }
-
-        @keyframes electricPulse {
-            from {
-                box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-            }
-            to {
-                box-shadow: 0 0 40px #ff073a, 0 0 60px #ff073a;
-                border-color: #ff073a;
-            }
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+            to { box-shadow: 0 0 30px rgba(255,255,255,0.7); }
         }
-
         h2 {
-            font-size: 32px;
-            margin-bottom: 25px;
-            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            font-size: 30px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 8px rgba(255,255,255,0.8);
         }
-
         #myInput {
             width: 100%;
             padding: 15px;
             border: none;
-            border-radius: 15px;
-            font-size: 22px;
+            border-radius: 10px;
+            font-size: 20px;
             text-transform: uppercase;
             text-align: center;
-            box-shadow: inset 0 0 20px rgba(0,255,255,0.8);
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.4);
             outline: none;
-            color: #0ff;
-            background: rgba(0,0,0,0.5);
+            color: #ffffff;
+            background: rgba(255,255,255,0.2);
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
-
         #myInput:focus {
-            box-shadow: inset 0 0 25px #ff073a;
-            background-color: rgba(255,255,255,0.1);
-            color: #ff073a;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.3);
         }
-
         #fullscreen {
             position: fixed;
             top: 0;
@@ -116,35 +72,24 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.95);
-            color: #0ff;
-            font-size: 220px;
+            color: #ffffff;
+            font-size: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-weight: bold;
             cursor: pointer;
             display: none;
             z-index: 100;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
         }
     </style>
 </head>
 <body oncontextmenu="return false;" oncopy="return false;">
     <canvas id="three-canvas"></canvas>
-
     <div class="card">
-        <h2>⚡ Postal Code CyberPulse ⚡</h2>
-        <input type="text" id="myInput" oninput="handleInput()" placeholder="ENTER CODE" autofocus>
+        <h2>⚡ Postal Code Neon ⚡</h2>
+        <input type="text" id="myInput" placeholder="ENTER CODE" autofocus>
     </div>
-
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
 
     <script src="areas.js"></script>
@@ -152,86 +97,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
     let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    let renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true, antialias: true });
+    let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    let renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // High-quality fractal noise-based shader
     let uniforms = {
-      time: { value: 0.0 },
-      resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+      time: { value: 0.0 }
     };
-
-    // Simple fractal Brownian motion approach
-    const vertexShader = `
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `;
-
-    const fragmentShader = `
-      uniform float time;
-      uniform vec2 resolution;
-      varying vec2 vUv;
-
-      // Hash function
-      float hash12(vec2 p) {
-          vec3 p3 = fract(vec3(p.x, p.y, p.x) * 0.1031);
-          p3 += dot(p3, p3.yzx + 31.32);
-          return fract((p3.x + p3.y) * p3.z);
-      }
-
-      // 2D Fractal Brownian Motion
-      float fbm(vec2 p) {
-          float f = 0.0;
-          float amp = 0.5;
-          for(int i = 0; i < 5; i++) {
-              f += amp * hash12(p);
-              p *= 2.02;
-              amp *= 0.5;
-          }
-          return f;
-      }
-
-      void main() {
-          vec2 uv = vUv * 3.0;
-          uv.y += 0.2 * sin(uv.x + time*0.3);
-          float noiseVal = fbm(uv + time*0.1);
-          // Build color
-          vec3 color1 = vec3(0.1, 0.0, 0.5);
-          vec3 color2 = vec3(0.0, 1.0, 0.7);
-          float val = smoothstep(0.2, 1.0, noiseVal);
-          vec3 color = mix(color1, color2, val);
-          gl_FragColor = vec4(color, 1.0);
-      }
-    `;
-
     let material = new THREE.ShaderMaterial({
       uniforms: uniforms,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader
+      vertexShader: "varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
+      fragmentShader: "uniform float time;varying vec2 vUv;void main(){vec2 uv=vUv*2.0-1.0;float r=length(uv);float a=atan(uv.y,uv.x);float swirl=0.0;for(int i=0;i<6;i++){swirl+=sin(float(i)*3.14+(a*4.0-time*0.6))*0.1;}float c=cos((r*10.0)-time*2.0+swirl);float s=sin((r*10.0)-time*2.0+swirl);vec3 color=vec3(0.5+0.5*c,0.5+0.5*s,0.5+0.5*sin(c+s));gl_FragColor=vec4(color,1.0);}"
     });
-
     let geometry = new THREE.PlaneGeometry(2, 2);
     let mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
-
     camera.position.z = 1;
-
     function animate() {
       requestAnimationFrame(animate);
-      uniforms.time.value += 0.02;
+      uniforms.time.value += 0.05;
       renderer.render(scene, camera);
     }
     animate();
-
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.aspect = window.innerWidth/window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
     });
     </script>
 </body>
