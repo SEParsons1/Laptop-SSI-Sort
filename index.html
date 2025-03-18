@@ -3,84 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Postal Code CyberPulse</title>
+    <title>Electric Postal Pulse</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(-45deg, #141e30, #243b55, #4f46e5, #9147ff);
-            background-size: 400% 400%;
-            animation: gradientBG 8s infinite;
+            font-family: 'Arial', sans-serif;
             height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            user-select: none;
+            align-items: center;
+            background-color: #000;
             overflow: hidden;
-            position: relative;
+            user-select: none;
         }
 
-        @keyframes gradientFlow {
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            background-repeat: no-repeat;
+            background-image: radial-gradient(circle, transparent 30%, #00ffff, transparent 50%, #ff00ff);
+            animation: electricMove 8s infinite alternate linear;
+        }
+
+        body::after {
+            animation-duration: 12s;
+            background-image: radial-gradient(circle at center, #ff073a, transparent 70%);
+            opacity: 0.6;
+        }
+
+        @keyframes GradientAnimation {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes GradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        body::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://www.transparenttextures.com/patterns/hexellence.png');
-            opacity: 0.3;
-            z-index: -1;
-        }
-
         .card {
-            background: rgba(0, 0, 0, 0.6);
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
-            border-radius: 30px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.6);
-            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.7), inset 0 0 20px rgba(255,255,255,0.1);
+            padding: 50px;
             text-align: center;
             max-width: 400px;
             width: 85%;
             color: #ffffff;
-            animation: glowCard 3s ease infinite alternate;
+            animation: electricPulse 1.5s infinite alternate;
+            border: 2px solid #0ff;
         }
 
-        @keyframes glowCard {
-            from { box-shadow: 0 0 10px #9147ff, 0 0 20px #4f46e5; }
-            to { box-shadow: 0 0 20px #4f46e5, 0 0 40px #9147ff; }
+        @keyframes electricPulse {
+            from { box-shadow: 0 0 20px #0ff, 0 0 40px #0ff; }
+            to { box-shadow: 0 0 40px #ff073a, 0 0 60px #ff073a; border-color: #ff073a; }
         }
 
         h2 {
             font-size: 32px;
             margin-bottom: 25px;
-            text-shadow: 1px 1px 10px rgba(0,0,0,0.7);
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
         }
 
         #myInput {
             width: 100%;
-            padding: 18px;
+            padding: 15px;
             border: none;
             border-radius: 15px;
-            font-size: 24px;
+            font-size: 22px;
             text-transform: uppercase;
             text-align: center;
-            box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 20px rgba(0,255,255,0.8);
             outline: none;
-            color: #ddd;
-            background-color: rgba(0,0,0,0.5);
+            color: #0ff;
+            background: rgba(0,0,0,0.5);
+            box-sizing: border-box;
             transition: all 0.3s ease;
         }
 
         #myInput:focus {
-            transform: scale(1.05);
+            box-shadow: inset 0 0 25px #ff073a;
             background-color: rgba(255,255,255,0.1);
+            color: #ff073a;
         }
 
         #fullscreen {
@@ -90,7 +100,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.95);
-            color: #9147ff;
+            color: #0ff;
             font-size: 220px;
             display: flex;
             justify-content: center;
@@ -98,18 +108,19 @@
             cursor: pointer;
             display: none;
             z-index: 100;
-            animation: fadeInFullscreen 0.7s ease;
+            animation: fadeIn 0.5s ease;
         }
 
-        @keyframes fadeInFullscreen {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
+
     </style>
 </head>
 <body oncontextmenu="return false;" oncopy="return false;">
     <div class="card">
-        <h2>🌠 Postal Code Neon 🌠</h2>
+        <h2>⚡ Postal Code CyberPulse ⚡</h2>
         <input type="text" id="myInput" oninput="handleInput()" placeholder="ENTER CODE" autofocus>
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
