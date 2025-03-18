@@ -8,67 +8,94 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
-            height: 100vh;
+            font-family: 'Orbitron', sans-serif;
+            background: black url('https://www.transparenttextures.com/patterns/stardust.png');
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
             overflow: hidden;
+            position: relative;
             user-select: none;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            padding: 40px;
-            text-align: center;
-            max-width: 400px;
-            width: 85%;
-            color: #ffffff;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
+        body::before {
             content: '';
             position: absolute;
-            top: -100%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-            animation: rotate 6s linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at top left, #ff00cc, #333399);
+            opacity: 0.8;
+            animation: moveStars 15s infinite alternate;
+            z-index: -1;
         }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes galaxyMove {
+            from { background-position: 0 0; }
+            to { background-position: -2000px 0; }
+        }
+
+        .galaxy {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: 0;
+            left: 0;
+            background-image: url('https://i.imgur.com/4HJbzEq.png');
+            animation: galaxyMove 60s linear infinite;
+            opacity: 0.4;
+            z-index: -1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            padding: 50px;
+            text-align: center;
+            max-width: 420px;
+            width: 85%;
+            color: #ffffff;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
         }
 
         h2 {
-            font-size: 26px;
-            margin-bottom: 25px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+            font-size: 30px;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px rgba(0,0,0,0.7);
         }
 
         #myInput {
             width: 100%;
-            padding: 15px;
+            padding: 20px;
             border: none;
-            border-radius: 10px;
-            font-size: 20px;
+            border-radius: 12px;
+            font-size: 22px;
             text-transform: uppercase;
             text-align: center;
-            box-shadow: inset 0 5px 10px rgba(0,0,0,0.4);
+            box-shadow: inset 0 6px 15px rgba(0,0,0,0.5);
             outline: none;
             color: #333;
+            transition: box-shadow 0.3s ease;
         }
 
-        #myInput::placeholder {
-            color: #999;
+        #myInput:focus {
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            background-color: rgba(255,255,255,0.9);
         }
 
         #fullscreen {
@@ -77,36 +104,30 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            color: #ffffff;
-            font-size: 220px;
+            background-color: rgba(0,0,0,0.95);
+            color: #fff;
+            font-size: 240px;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-weight: bold;
             cursor: pointer;
             display: none;
             z-index: 100;
-            animation: appear 0.5s ease-out;
+            animation: fadeIn 0.6s ease;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        h2 {
-            font-size: 28px;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-            font-weight: 700;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
     </style>
 </head>
 <body oncontextmenu="return false;" oncopy="return false;">
+    <div class="galaxy"></div>
     <div class="card">
-        <h2>🚀 Postal Code Explorer 🚀</h2>
-        <input type="text" id="myInput" oninput="handleInput()" placeholder="ENTER CODE" autofocus>
+        <h2>🌌 Postal Code Galaxy 🌌</h2>
+        <input type="text" id="myInput" oninput="handleInput()" placeholder="TYPE CODE" autofocus>
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
 
