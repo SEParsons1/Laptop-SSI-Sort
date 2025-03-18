@@ -29,17 +29,20 @@ function displayArea(postalCode) {
     speak(area);
 }
 
+// Adjusts font to the maximum possible size while still fitting on screen
 function fitText() {
     const fullscreen = document.getElementById('fullscreen');
-    let fontSize = 280;
+    
+    // Start large and decrease until it fits
+    let fontSize = 999;
     fullscreen.style.fontSize = fontSize + 'px';
-    const bodyWidth = document.body.clientWidth;
-    while (fullscreen.scrollWidth > bodyWidth && fontSize > 0) {
+
+    // Loop until both width and height fit within the visible window
+    while (
+        (fullscreen.scrollWidth > window.innerWidth || fullscreen.scrollHeight > window.innerHeight)
+        && fontSize > 0
+    ) {
         fontSize--;
-        fullscreen.style.fontSize = fontSize + 'px';
-    }
-    if (fontSize > 0) {
-        fontSize -= 5;
         fullscreen.style.fontSize = fontSize + 'px';
     }
 }
