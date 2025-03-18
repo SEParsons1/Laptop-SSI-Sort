@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Electric Postal Pulse + 3D Waves</title>
+    <title>Postal Code CyberPulse (High Quality)</title>
     <style>
         body {
             margin: 0;
@@ -19,7 +19,32 @@
             position: relative;
         }
 
-        /* The 3D canvas at the absolute back */
+        /* Fallback animations behind the Three.js canvas */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, #0ff 0%, transparent 70%),
+                        radial-gradient(circle, #f0f 0%, transparent 70%);
+            background-repeat: no-repeat;
+            background-position: 25% 25%, 75% 75%;
+            animation: fallbackPulse 6s linear infinite alternate;
+            opacity: 0.2;
+            z-index: -2;
+        }
+
+        @keyframes fallbackPulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.4);
+            }
+        }
+
         #three-canvas {
             position: fixed;
             top: 0;
@@ -31,44 +56,8 @@
             border: none;
         }
 
-        body::before {
-            content: '';
-            position: absolute;
-            width: 300%;
-            height: 300%;
-            top: -100%;
-            left: -100%;
-            background-repeat: no-repeat;
-            background-image: radial-gradient(circle, transparent 30%, #00ffff, transparent 50%, #ff00ff);
-            animation: electricMove 8s infinite alternate linear;
-            opacity: 0.3;
-            z-index: -2;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            width: 300%;
-            height: 300%;
-            top: -100%;
-            left: -100%;
-            background-image: radial-gradient(circle at center, #ff073a, transparent 70%);
-            animation: electricMove2 12s infinite alternate linear;
-            opacity: 0.3;
-            z-index: -2;
-        }
-
-        @keyframes electricMove {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes electricMove2 {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
-        }
-
         .card {
+            position: relative;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             border-radius: 20px;
@@ -83,8 +72,13 @@
         }
 
         @keyframes electricPulse {
-            from { box-shadow: 0 0 20px #0ff, 0 0 40px #0ff; }
-            to { box-shadow: 0 0 40px #ff073a, 0 0 60px #ff073a; border-color: #ff073a; }
+            from {
+                box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
+            }
+            to {
+                box-shadow: 0 0 40px #ff073a, 0 0 60px #ff073a;
+                border-color: #ff073a;
+            }
         }
 
         h2 {
@@ -134,19 +128,23 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body oncontextmenu="return false;" oncopy="return false;">
-    <!-- The Three.js canvas will be appended below -->
     <canvas id="three-canvas"></canvas>
 
     <div class="card">
         <h2>⚡ Postal Code CyberPulse ⚡</h2>
         <input type="text" id="myInput" oninput="handleInput()" placeholder="ENTER CODE" autofocus>
     </div>
+
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
 
     <script src="areas.js"></script>
@@ -155,42 +153,76 @@
     <script>
     let scene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    let renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true });
+    let renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
+    // High-quality fractal noise-based shader
     let uniforms = {
-      time: { value: 1.0 },
+      time: { value: 0.0 },
       resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
     };
 
+    // Simple fractal Brownian motion approach
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform float time;
+      uniform vec2 resolution;
+      varying vec2 vUv;
+
+      // Hash function
+      float hash12(vec2 p) {
+          vec3 p3 = fract(vec3(p.x, p.y, p.x) * 0.1031);
+          p3 += dot(p3, p3.yzx + 31.32);
+          return fract((p3.x + p3.y) * p3.z);
+      }
+
+      // 2D Fractal Brownian Motion
+      float fbm(vec2 p) {
+          float f = 0.0;
+          float amp = 0.5;
+          for(int i = 0; i < 5; i++) {
+              f += amp * hash12(p);
+              p *= 2.02;
+              amp *= 0.5;
+          }
+          return f;
+      }
+
+      void main() {
+          vec2 uv = vUv * 3.0;
+          uv.y += 0.2 * sin(uv.x + time*0.3);
+          float noiseVal = fbm(uv + time*0.1);
+          // Build color
+          vec3 color1 = vec3(0.1, 0.0, 0.5);
+          vec3 color2 = vec3(0.0, 1.0, 0.7);
+          float val = smoothstep(0.2, 1.0, noiseVal);
+          vec3 color = mix(color1, color2, val);
+          gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
     let material = new THREE.ShaderMaterial({
       uniforms: uniforms,
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        uniform float time;
-        varying vec2 vUv;
-        void main() {
-          float wave = sin(vUv.x * 10.0 + time) * cos(vUv.y * 10.0 + time);
-          vec3 color = vec3(0.1, 0.8, 1.0) * wave;
-          gl_FragColor = vec4(color, 1.0);
-        }
-      `
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader
     });
 
     let geometry = new THREE.PlaneGeometry(2, 2);
     let mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
+
     camera.position.z = 1;
 
     function animate() {
       requestAnimationFrame(animate);
-      uniforms.time.value += 0.05;
+      uniforms.time.value += 0.02;
       renderer.render(scene, camera);
     }
     animate();
