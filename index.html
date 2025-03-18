@@ -17,6 +17,8 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea, #764ba2);
             animation: gradientBG 10s ease infinite;
+            position: relative;
+            overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -33,6 +35,8 @@
             width: 90%;
             max-width: 500px;
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
 
         h2 {
@@ -83,6 +87,30 @@
             transform: scale(1.02);
             transition: transform 0.3s ease;
         }
+
+        .floating-bubbles {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bubble {
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            animation: floatBubble 5s infinite ease-in-out;
+        }
+
+        @keyframes floatBubble {
+            0% { transform: translateY(0); opacity: 0.7; }
+            50% { opacity: 0.3; }
+            100% { transform: translateY(-150vh); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -91,6 +119,14 @@
         <input type="text" id="myInput" oninput="handleInput()" placeholder="e.g., 123" autofocus>
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
+
+    <div class="floating-bubbles">
+        <div class="bubble"></div>
+        <div class="bubble" style="animation-duration: 7s;"></div>
+        <div class="bubble" style="animation-duration: 6s;"></div>
+        <div class="bubble" style="animation-duration: 8s;"></div>
+        <div class="bubble" style="animation-duration: 5s;"></div>
+    </div>
 
     <script src="areas.js"></script>
     <script src="main.js"></script>
