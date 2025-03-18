@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Postal Code Neon</title>
+    <title>Postal Code 4K</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             overflow: hidden;
             user-select: none;
         }
@@ -20,25 +16,29 @@
             position: fixed;
             top: 0;
             left: 0;
-            outline: none;
             z-index: -1;
+            outline: none;
         }
         .card {
             background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(12px);
             border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
             padding: 40px;
             text-align: center;
             max-width: 400px;
             width: 85%;
             color: #ffffff;
-            border: 2px solid rgba(255,255,255,0.4);
+            border: 2px solid rgba(255,255,255,0.25);
+            margin: auto;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
             animation: glow 1.8s ease-in-out infinite alternate;
         }
         @keyframes glow {
             from { box-shadow: 0 0 10px rgba(255,255,255,0.3); }
-            to { box-shadow: 0 0 30px rgba(255,255,255,0.7); }
+            to   { box-shadow: 0 0 50px rgba(255,255,255,0.9); }
         }
         h2 {
             font-size: 30px;
@@ -62,7 +62,7 @@
             transition: all 0.3s ease;
         }
         #myInput:focus {
-            box-shadow: inset 0 0 15px rgba(255,255,255,0.5);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.7);
             background-color: rgba(255,255,255,0.3);
         }
         #fullscreen {
@@ -87,7 +87,7 @@
 <body oncontextmenu="return false;" oncopy="return false;">
     <canvas id="three-canvas"></canvas>
     <div class="card">
-        <h2>⚡ Postal Code Neon ⚡</h2>
+        <h2>⚡ Postal Code 4K ⚡</h2>
         <input type="text" id="myInput" placeholder="ENTER CODE" autofocus>
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
@@ -97,31 +97,75 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
     let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    let renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    let uniforms = {
-      time: { value: 0.0 }
-    };
-    let material = new THREE.ShaderMaterial({
-      uniforms: uniforms,
-      vertexShader: "varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
-      fragmentShader: "uniform float time;varying vec2 vUv;void main(){vec2 uv=vUv*2.0-1.0;float r=length(uv);float a=atan(uv.y,uv.x);float swirl=0.0;for(int i=0;i<6;i++){swirl+=sin(float(i)*3.14+(a*4.0-time*0.6))*0.1;}float c=cos((r*10.0)-time*2.0+swirl);float s=sin((r*10.0)-time*2.0+swirl);vec3 color=vec3(0.5+0.5*c,0.5+0.5*s,0.5+0.5*sin(c+s));gl_FragColor=vec4(color,1.0);}"
+    let camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+    camera.position.set(0, 1, 5);
+
+    let renderer = new THREE.WebGLRenderer({
+        canvas: document.getElementById('three-canvas'),
+        antialias: true
     });
-    let geometry = new THREE.PlaneGeometry(2, 2);
-    let mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-    camera.position.z = 1;
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
+    scene.add(hemisphereLight);
+
+    let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 10, 7);
+    scene.add(directionalLight);
+
+    let cubeRenderTarget = new THREE.WebGLCubeRenderTarget(512, {
+        format: THREE.RGBAFormat,
+        generateMipmaps: true,
+        minFilter: THREE.LinearMipmapLinearFilter
+    });
+    let cubeCamera = new THREE.CubeCamera(0.1, 1000, cubeRenderTarget);
+    scene.add(cubeCamera);
+
+    let floorGeometry = new THREE.CircleGeometry(10, 64);
+    let floorMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x888888,
+        metalness: 0.3,
+        roughness: 0.5
+    });
+    let floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    floor.rotation.x = - Math.PI / 2;
+    floor.position.y = -1;
+    scene.add(floor);
+
+    let sphereGeometry = new THREE.SphereGeometry(1, 64, 64);
+    let sphereMaterial = new THREE.MeshPhysicalMaterial({
+        metalness: 1.0,
+        roughness: 0.05,
+        reflectivity: 1.0,
+        envMap: cubeRenderTarget.texture
+    });
+    let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.position.set(0, 0, 0);
+    scene.add(sphere);
+
     function animate() {
-      requestAnimationFrame(animate);
-      uniforms.time.value += 0.05;
-      renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+
+        sphere.visible = false;
+        cubeCamera.position.copy(sphere.position);
+        cubeCamera.update(renderer, scene);
+        sphere.visible = true;
+
+        sphere.rotation.y += 0.01;
+        renderer.render(scene, camera);
     }
     animate();
+
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth/window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
     });
     </script>
 </body>
