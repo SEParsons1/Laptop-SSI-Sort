@@ -3,66 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Postal Code Neon</title>
+    <title>Postal Code CyberPulse</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #0a0a0a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(-45deg, #141e30, #243b55, #4f46e5, #9147ff);
+            background-size: 400% 400%;
+            animation: gradientBG 8s infinite;
             height: 100vh;
-            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             user-select: none;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/hexellence.png');
+            opacity: 0.3;
+            z-index: -1;
         }
 
         .card {
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
             padding: 40px;
             text-align: center;
             max-width: 400px;
             width: 85%;
             color: #ffffff;
-            border: 3px solid #39ff14;
-            animation: neonPulse 2s infinite alternate;
+            animation: glowCard 3s ease infinite alternate;
         }
 
-        @keyframes neonPulse {
-            from { box-shadow: 0 0 15px #39ff14, 0 0 30px #39ff14; }
-            to { box-shadow: 0 0 25px #ff073a, 0 0 50px #ff073a; border-color: #ff073a; }
+        @keyframes glowCard {
+            from { box-shadow: 0 0 10px #9147ff, 0 0 20px #4f46e5; }
+            to { box-shadow: 0 0 20px #4f46e5, 0 0 40px #9147ff; }
         }
 
         h2 {
-            font-size: 30px;
-            color: #39ff14;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #39ff14;
+            font-size: 32px;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 10px rgba(0,0,0,0.7);
         }
 
         #myInput {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             border: none;
-            border-radius: 10px;
-            font-size: 22px;
+            border-radius: 15px;
+            font-size: 24px;
             text-transform: uppercase;
             text-align: center;
-            box-shadow: inset 0 0 10px rgba(0, 255, 20, 0.5);
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
             outline: none;
-            color: #39ff14;
-            background: rgba(0,0,0,0.8);
-            box-sizing: border-box;
+            color: #ddd;
+            background-color: rgba(0,0,0,0.5);
             transition: all 0.3s ease;
         }
 
         #myInput:focus {
-            box-shadow: inset 0 0 15px #39ff14;
-            background-color: rgba(0,0,0,0.9);
+            transform: scale(1.05);
+            background-color: rgba(255,255,255,0.1);
         }
 
         #fullscreen {
@@ -72,27 +90,26 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.95);
-            color: #39ff14;
-            font-size: 200px;
+            color: #9147ff;
+            font-size: 220px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
             cursor: pointer;
             display: none;
             z-index: 100;
-            animation: fadeIn 0.5s ease;
+            animation: fadeInFullscreen 0.7s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes fadeInFullscreen {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body oncontextmenu="return false;" oncopy="return false;">
     <div class="card">
-        <h2>⚡ Postal Code Neon ⚡</h2>
+        <h2>🌠 Postal Code Neon 🌠</h2>
         <input type="text" id="myInput" oninput="handleInput()" placeholder="ENTER CODE" autofocus>
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
