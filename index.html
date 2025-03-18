@@ -3,61 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Postal Code Adventure</title>
+    <title>ZipZap - Instant Postal Sorter</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(120deg, #fbc7a4, #f7797d, #6a82fb, #fc5c7d);
-            background-size: 600% 600%;
-            animation: gradientAnimation 10s ease infinite;
-            color: white;
-            overflow: hidden;
-        }
-
-        @keyframes gradientAnimation {
+        @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        .container {
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #ff9966, #ff5e62, #00c6ff, #0072ff);
+            background-size: 300% 300%;
+            animation: gradientBG 10s ease infinite;
+            color: white;
+        }
+
+        .card {
             background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            padding: 25px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
             backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
         h2 {
-            font-size: 2em;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+            text-shadow: 3px 3px 4px rgba(0,0,0,0.3);
             margin-bottom: 20px;
+            font-size: 28px;
         }
 
-        #myInput {
+        input[type=text] {
             width: 100%;
-            font-size: 1.5em;
-            padding: 10px;
-            border: none;
+            padding: 15px;
+            font-size: 22px;
             border-radius: 10px;
-            margin-top: 10px;
-            text-align: center;
-            transition: box-shadow 0.3s ease;
+            border: none;
+            outline: none;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
 
-        #myInput:focus {
-            outline: none;
-            box-shadow: 0 0 15px rgba(255,255,255,0.8);
+        input[type=text]:focus {
+            transform: scale(1.05);
         }
 
         #fullscreen {
@@ -67,48 +65,29 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.9);
-            color: #fff;
+            color: #ffffff;
             font-size: 15vw;
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
-            transform: scale(0);
-            transition: transform 0.5s ease;
+            font-weight: 600;
             cursor: pointer;
-            z-index: 1000;
         }
 
-        #fullscreen.active {
-            transform: scale(1);
+        ::placeholder {
+            color: rgba(255,255,255,0.7);
+            opacity: 1;
         }
-
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Discover Your Postal Area!</h2>
-        <input type="text" id="myInput" oninput="handleInput()" placeholder="Last 3 digits..." maxlength="3" autofocus>
+    <div class="card">
+        <h2>ZipZap Postal Code Sorter</h2>
+        <input type="text" id="myInput" placeholder="Last 3 Digits" oninput="handleInput()" autofocus autocomplete="off">
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
-    <script src="areas.js"></script>
-    <script>
-        function handleInput() {
-            const input = document.getElementById('myInput').value;
-            const fullscreen = document.getElementById('fullscreen');
-            if (input.length === 3 && areas[input]) {
-                fullscreen.textContent = areas[input];
-                fullscreen.classList.add('active');
-            } else {
-                fullscreen.classList.remove('active');
-            }
-        }
 
-        function toggleFullscreen() {
-            document.getElementById('fullscreen').classList.remove('active');
-            document.getElementById('myInput').value = '';
-            document.getElementById('myInput').focus();
-        }
-    </script>
+    <script src="areas.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
