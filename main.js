@@ -23,28 +23,49 @@ function handleInput() {
 function displayArea(postalCode) {
     const fullscreen = document.getElementById('fullscreen');
     const area = areas[postalCode] || "NOT ON LIST!";
+    
+    // Put text in the fullscreen overlay
     fullscreen.textContent = area;
-    fitText();
+
+    // Make sure the fullscreen is visible *before* we measure/resize
     fullscreen.style.display = 'flex';
+
+    // Now do the actual font-sizing
+    fitText();
+
+    // Speak the text
     speak(area);
 }
 
-// Adjusts font to the maximum possible size while still fitting on screen
+// Adjusts font to the maximum size that fits within the window
 function fitText() {
     const fullscreen = document.getElementById('fullscreen');
     
-    // Start large and decrease until it fits
-    let fontSize = 999;
-    fullscreen.style.fontSize = fontSize + 'px';
+    // We’ll do a binary search to find the largest font size that fits
+    let minSize = 10;
+    let maxSize = 3000;
+    let bestFit = minSize;
 
-    // Loop until both width and height fit within the visible window
-    while (
-        (fullscreen.scrollWidth > window.innerWidth || fullscreen.scrollHeight > window.innerHeight)
-        && fontSize > 0
-    ) {
-        fontSize--;
-        fullscreen.style.fontSize = fontSize + 'px';
+    while (minSize <= maxSize) {
+        let midSize = Math.floor((minSize + maxSize) / 2);
+        fullscreen.style.fontSize = midSize + 'px';
+        
+        // Force a reflow by reading scrollWidth/scrollHeight
+        const tooWide  = fullscreen.scrollWidth  > window.innerWidth;
+        const tooTall  = fullscreen.scrollHeight > window.innerHeight;
+
+        if (tooWide || tooTall) {
+            // If it's too big, try smaller
+            maxSize = midSize - 1;
+        } else {
+            // It fits, so remember this size and try bigger
+            bestFit = midSize;
+            minSize = midSize + 1;
+        }
     }
+
+    // After the loop, 'bestFit' is the largest size that worked
+    fullscreen.style.fontSize = bestFit + 'px';
 }
 
 function speak(text) {
