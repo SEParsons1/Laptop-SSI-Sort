@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Electric Postal Pulse</title>
+    <title>Electric Postal Pulse + 3D Waves</title>
     <style>
         body {
             margin: 0;
@@ -16,37 +16,59 @@
             background-color: #000;
             overflow: hidden;
             user-select: none;
+            position: relative;
         }
 
-        body::before, body::after {
+        /* The 3D canvas at the absolute back */
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            outline: none;
+            border: none;
+        }
+
+        body::before {
             content: '';
             position: absolute;
             width: 300%;
             height: 300%;
+            top: -100%;
+            left: -100%;
             background-repeat: no-repeat;
             background-image: radial-gradient(circle, transparent 30%, #00ffff, transparent 50%, #ff00ff);
             animation: electricMove 8s infinite alternate linear;
+            opacity: 0.3;
+            z-index: -2;
         }
 
         body::after {
-            animation-duration: 12s;
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
             background-image: radial-gradient(circle at center, #ff073a, transparent 70%);
-            opacity: 0.6;
+            animation: electricMove2 12s infinite alternate linear;
+            opacity: 0.3;
+            z-index: -2;
         }
 
-        @keyframes GradientAnimation {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        @keyframes electricMove {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        @keyframes GradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes electricMove2 {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
         }
 
         .card {
-            position: relative;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             border-radius: 20px;
@@ -115,10 +137,12 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
     </style>
 </head>
 <body oncontextmenu="return false;" oncopy="return false;">
+    <!-- The Three.js canvas will be appended below -->
+    <canvas id="three-canvas"></canvas>
+
     <div class="card">
         <h2>⚡ Postal Code CyberPulse ⚡</h2>
         <input type="text" id="myInput" oninput="handleInput()" placeholder="ENTER CODE" autofocus>
@@ -127,5 +151,56 @@
 
     <script src="areas.js"></script>
     <script src="main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    let renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    let uniforms = {
+      time: { value: 1.0 },
+      resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+    };
+
+    let material = new THREE.ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float time;
+        varying vec2 vUv;
+        void main() {
+          float wave = sin(vUv.x * 10.0 + time) * cos(vUv.y * 10.0 + time);
+          vec3 color = vec3(0.1, 0.8, 1.0) * wave;
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `
+    });
+
+    let geometry = new THREE.PlaneGeometry(2, 2);
+    let mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+    camera.position.z = 1;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      uniforms.time.value += 0.05;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+    });
+    </script>
 </body>
 </html>
