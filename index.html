@@ -4,24 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Postal Code Sorter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            animation: gradientBG 10s ease infinite;
         }
 
         @keyframes gradientBG {
@@ -31,23 +26,34 @@
         }
 
         .container {
-            width: 100%;
-            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 500px;
             text-align: center;
         }
 
         h2 {
-            color: #FFFFFF;
-            text-shadow: 4px 4px 2px black;
+            color: #333;
+            margin-bottom: 20px;
         }
 
         #myInput {
             width: 100%;
-            font-size: 25px;
-            padding: 12px 20px;
-            border: 1px solid #ddd;
-            margin-bottom: 12px;
+            font-size: 22px;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            transition: border 0.3s ease;
+            outline: none;
             box-sizing: border-box;
+        }
+
+        #myInput:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.5);
         }
 
         #fullscreen {
@@ -57,22 +63,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            font-size: 280px;
-            display: flex;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            font-size: 200px;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 9999;
+        }
+
+        @media (max-width: 600px) {
+            #fullscreen {
+                font-size: 100px;
+            }
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Enter Last 3 Digits of Postal Code</h2>
-        <input type="text" id="myInput" oninput="handleInput()" placeholder="Type last 3 digits" autofocus>
+        <input type="text" id="myInput" oninput="handleInput()" placeholder="e.g., 123" autofocus>
     </div>
     <div id="fullscreen" onclick="toggleFullscreen()"></div>
+
     <script src="areas.js"></script>
     <script src="main.js"></script>
 </body>
