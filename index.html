@@ -1,73 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Postal Code Sorter</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            background: radial-gradient(circle, #ff6b6b, #4ecdc4, #45b7d1, #96c93d, #ff6b6b);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        .container {
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        h2 {
-            color: #FFFFFF;
-            text-shadow: 4px 4px 2px black;
-        }
-        #myInput {
-            width: 100%;
-            font-size: 25px;
-            padding: 12px 20px;
-            border: 1px solid #ddd;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-        }
-        #fullscreen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            font-size: 280px;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-        }
-        @keyframes gradientShift {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 100%; }
-            100% { background-position: 0% 0%; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Enter Last 3 Digits of Postal Code</h2>
-        <input type="text" id="myInput" oninput="handleInput()" placeholder="Type last 3 digits" autofocus>
-    </div>
-    <div id="fullscreen" onclick="toggleFullscreen()"></div>
-    <script src="areas.js"></script>
-    <script src="main.js"></script>
-</body>
-</html>
+function handleInput() {
+    const input = document.getElementById('myInput');
+    let value = input.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+    if (value.length > 3) {
+        value = value.slice(-1);
+    }
+    input.value = value;
+    const fullscreen = document.getElementById('fullscreen');
+    if (value.length === 3) {
+        displayArea(value);
+    } else {
+        fullscreen.style.display = 'none';
+    }
+}
+
+function displayArea(postalCode) {
+    const fullscreen = document.getElementById('fullscreen');
+    const area = areas[postalCode] || "NOT ON LIST!";
+    fullscreen.textContent = area;
+    fitText();
+    fullscreen.style.display = 'flex';
+}
+
+function fitText() {
+    const fullscreen = document.getElementById('fullscreen');
+    let fontSize = 280;
+    fullscreen.style.fontSize = fontSize + 'px';
+    const bodyWidth = document.body.clientWidth;
+    while (fullscreen.scrollWidth > bodyWidth && fontSize > 0) {
+        fontSize--;
+        fullscreen.style.fontSize = fontSize + 'px';
+    }
+    if (fontSize > 0) {
+        fontSize -= 5;
+        fullscreen.style.fontSize = fontSize + 'px';
+    }
+}
+
+function toggleFullscreen() {
+    const fullscreen = document.getElementById('fullscreen');
+    fullscreen.style.display = 'none';
+}
+
+document.addEventListener("click", function(event) {
+    const input = document.getElementById("myInput");
+    if (event.target !== input) {
+        input.focus();
+    }
+});
+
+document.addEventListener("blur", function(event) {
+    if (event.target === document.getElementById("myInput")) {
+        setTimeout(() => event.target.focus(), 10);
+    }
+}, true);
+
+window.addEventListener('resize', function() {
+    const fullscreen = document.getElementById('fullscreen');
+    if (fullscreen.style.display === 'flex') {
+        fitText();
+    }
+});
+
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener('copy', function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'a') {
+        e.preventDefault();
+    }
+});
