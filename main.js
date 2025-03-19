@@ -19,7 +19,6 @@ function displayArea(postalCode) {
     fullscreen.textContent = area;
     fitText();
     fullscreen.style.display = 'flex';
-    speak(area);
 }
 
 function fitText() {
@@ -35,16 +34,6 @@ function fitText() {
         fontSize -= 5;
         fullscreen.style.fontSize = fontSize + 'px';
     }
-}
-
-function speak(text) {
-    if (!window.speechSynthesis) {
-        console.log('Text-to-speech not supported.');
-        return;
-    }
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    speechSynthesis.speak(utterance);
 }
 
 function toggleFullscreen() {
