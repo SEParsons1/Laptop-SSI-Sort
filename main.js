@@ -2,7 +2,7 @@ function handleInput() {
     const input = document.getElementById('myInput');
     let value = input.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
     if (value.length > 3) {
-        value = value.slice(-1);
+        value = value.slice(-3);
     }
     input.value = value;
     const fullscreen = document.getElementById('fullscreen');
