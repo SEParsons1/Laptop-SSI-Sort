@@ -15,24 +15,23 @@
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
-            background: grey;
+            background: radial-gradient(circle, #ff6b6b, #4ecdc4, #45b7d1, #96c93d, #ff6b6b);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
         }
-
         .container {
             width: 100%;
             max-width: 400px;
             text-align: center;
         }
-
         h2 {
             color: #FFFFFF;
             text-shadow: 4px 4px 2px black;
         }
-
         #myInput {
             width: 100%;
             font-size: 25px;
@@ -41,7 +40,6 @@
             margin-bottom: 12px;
             box-sizing: border-box;
         }
-
         #fullscreen {
             display: none;
             position: fixed;
@@ -56,6 +54,11 @@
             justify-content: center;
             align-items: center;
             font-weight: bold;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
         }
     </style>
 </head>
